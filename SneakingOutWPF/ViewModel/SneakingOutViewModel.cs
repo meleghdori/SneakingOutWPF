@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Text;
 using System.Collections.ObjectModel;
-using SneakingOut.Model;
+using SneakingOutWPF.Model;
 
 namespace SneakingOutWPF.ViewModel
 {

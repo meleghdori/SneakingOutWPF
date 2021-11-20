@@ -4,7 +4,7 @@ using System.IO;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace SneakingOut.Persistence
+namespace SneakingOutWPF.Persistence
 {
     public class SneakingOutFileDataAccess : SneakingOutDataAccess
     {

@@ -24,6 +24,51 @@ namespace SneakingOutWPF.ViewModel
             }
         }
 
+        public Boolean IsSecurity()
+        {
+            if(_text == "1" || _text == "2")
+            {
+                return true;
+            }
+            else { return false; }
+        }
+
+        public Boolean IsPlayer()
+        {
+            if (_text == "3")
+            {
+                return true;
+            }
+            else { return false; }
+        }
+
+        public Boolean IsWall()
+        {
+            if (_text == "4")
+            {
+                return true;
+            }
+            else { return false; }
+        }
+
+        public Boolean IsEmpty()
+        {
+            if (_text == "0")
+            {
+                return true;
+            }
+            else { return false; }
+        }
+
+        public Boolean IsExit()
+        {
+            if (_text == "5")
+            {
+                return true;
+            }
+            else { return false; }
+        }
+
         /// <summary>
         /// Vízszintes koordináta lekérdezése, vagy beállítása.
         /// </summary>

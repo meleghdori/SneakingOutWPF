@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Text;
 
-namespace SneakingOut.Model
+namespace SneakingOutWPF.Model
 {
     public class SneakingOutEventArgs : EventArgs
     {

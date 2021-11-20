@@ -3,9 +3,9 @@ using System.Collections.Generic;
 using System.Drawing;
 using System.Text;
 using System.Threading.Tasks;
-using SneakingOut.Persistence;
+using SneakingOutWPF.Persistence;
 
-namespace SneakingOut.Model
+namespace SneakingOutWPF.Model
 {
 
     /// <summary>
