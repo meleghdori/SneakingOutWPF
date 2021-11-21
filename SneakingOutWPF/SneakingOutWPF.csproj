@@ -7,7 +7,23 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <None Remove="black.png" />
+    <None Remove="exit.jpg" />
+    <None Remove="player1.png" />
+    <None Remove="security.png" />
+    <None Remove="wall.jpg" />
+  </ItemGroup>
+
+  <ItemGroup>
     <Page Include="App.xaml" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Resource Include="black.png" />
+    <Resource Include="exit.jpg" />
+    <Resource Include="player1.png" />
+    <Resource Include="security.png" />
+    <Resource Include="wall.jpg" />
   </ItemGroup>
 
 </Project>

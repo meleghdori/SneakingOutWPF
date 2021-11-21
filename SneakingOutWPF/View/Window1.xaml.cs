@@ -19,7 +19,14 @@ namespace SneakingOutWPF.View
     {
         public Window1()
         {
-            InitializeComponent();
+            try
+            {
+                InitializeComponent();
+            }
+            catch (Exception e)
+            {
+                MessageBox.Show(e.Message);
+            }
         }
     }
 }

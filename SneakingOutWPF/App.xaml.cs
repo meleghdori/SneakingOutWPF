@@ -12,9 +12,12 @@ using SneakingOutWPF.Persistence;
 using SneakingOutWPF.Model;
 using SneakingOutWPF.View;
 using Microsoft.Win32;
+using System.Windows.Input;
 
 namespace SneakingOutWPF
 {
+    public enum GameLevel { Level1, Level2, Level3 }
+
     /// <summary>
     /// Interaction logic for App.xaml
     /// </summary>
@@ -27,6 +30,8 @@ namespace SneakingOutWPF
         private SneakingOutViewModel _viewModel;
         private Window1 _view;
         private DispatcherTimer _timer;
+        private Boolean isPaused;
+        private GameLevel _gameLevel;
 
         #endregion
 
@@ -49,14 +54,20 @@ namespace SneakingOutWPF
             // modell létrehozása
             _model = new SneakingOutGameModel(new SneakingOutFileDataAccess());
             _model.GameOver += new EventHandler<SneakingOutEventArgs>(Model_GameOver);
-            //_model.NewGame();
 
             // nézemodell létrehozása
             _viewModel = new SneakingOutViewModel(_model);
-            _viewModel.NewGame += new EventHandler(ViewModel_NewGame);
             _viewModel.ExitGame += new EventHandler(ViewModel_ExitGame);
-            _viewModel.LoadGame += new EventHandler(ViewModel_LoadGame);
+            _viewModel.Level1 += new EventHandler(Level1);
+            _viewModel.Level2 += new EventHandler(Level2);
+            _viewModel.Level3 += new EventHandler(Level3);
             _viewModel.SaveGame += new EventHandler(ViewModel_SaveGame);
+            _viewModel.PauseGame += new EventHandler(ViewModel_PauseGame);
+            _viewModel.RestartGame += new EventHandler(ViewModel_RestartGame);
+            /*_viewModel.UpKey += new EventHandler(UpKey);
+            _viewModel.DownKey += new EventHandler(DownKey);
+            _viewModel.RightKey += new EventHandler(RightKey);
+            _viewModel.LeftKey += new EventHandler(LeftKey);*/
 
             // nézet létrehozása
             _view = new Window1();
@@ -69,11 +80,16 @@ namespace SneakingOutWPF
             _timer.Interval = TimeSpan.FromSeconds(1);
             _timer.Tick += new EventHandler(Timer_Tick);
             //_timer.Start();
+
+            isPaused = true;
         }
 
         private void Timer_Tick(object sender, EventArgs e)
         {
-            _model.AdvanceTime();
+            if (!isPaused)
+            {
+                _model.AdvanceTime();
+            }
         }
 
         #endregion
@@ -102,43 +118,26 @@ namespace SneakingOutWPF
         #region ViewModel event handlers
 
         /// <summary>
-        /// Új játék indításának eseménykezelője.
-        /// </summary>
-        private void ViewModel_NewGame(object sender, EventArgs e)
-        {
-            _model.NewGame();
-            _timer.Start();
-        }
-
-        /// <summary>
         /// Játék betöltésének eseménykezelője.
         /// </summary>
-        private async void ViewModel_LoadGame(object sender, System.EventArgs e)
+        private async void ViewModel_StartGame(object sender, System.EventArgs e, GameLevel gameLevel, String fileName)
         {
-            Boolean restartTimer = _timer.IsEnabled;
-
-            _timer.Stop();
+            _model.NewGame();
+            _gameLevel = gameLevel;
 
             try
             {
-                OpenFileDialog openFileDialog = new OpenFileDialog(); // dialógusablak
-                openFileDialog.Title = "SneakingOut table loading";
-                openFileDialog.Filter = "SneakingOut table|*.txt";
-                if (openFileDialog.ShowDialog() == true)
-                {
-                    // játék betöltése
-                    await _model.LoadGameAsync(openFileDialog.FileName);
-
-                    _timer.Start();
-                }
+                // játék betöltése
+                await _model.LoadGameAsync(fileName);
+         
             }
             catch (SneakingOutDataException)
             {
                 MessageBox.Show("Loading failed!", "SneakingOut the game", MessageBoxButton.OK, MessageBoxImage.Error);
             }
 
-            if (restartTimer) // ha szükséges, elindítjuk az időzítőt
-                _timer.Start();
+            _timer.Start();
+            isPaused = false;
         }
 
         /// <summary>
@@ -184,6 +183,87 @@ namespace SneakingOutWPF
         {
             _view.Close(); // ablak bezárása
         }
+
+        private void Level1(object sender, System.EventArgs e)
+        {
+            ViewModel_StartGame(sender, e, GameLevel.Level1, @"..\..\..\level1.txt");
+        }
+
+        private void Level2(object sender, System.EventArgs e)
+        {
+            ViewModel_StartGame(sender, e, GameLevel.Level2, @"..\..\..\level2.txt");
+        }
+
+        private void Level3(object sender, System.EventArgs e)
+        {
+            ViewModel_StartGame(sender, e, GameLevel.Level3, @"..\..\..\level3.txt");
+        }
+
+
+        /// <summary>
+        /// Játék megallitasanak eseménykezelője.
+        /// </summary>
+        private void ViewModel_PauseGame(object sender, System.EventArgs e)
+        {
+            if (!isPaused)
+            {
+                isPaused = true;
+                _timer.Stop();
+            }
+            else if (isPaused)
+            {
+                isPaused = false;
+                _timer.Start();
+            }
+        }
+
+        private void ViewModel_RestartGame(object sender, System.EventArgs e)
+        {
+            if (_gameLevel == GameLevel.Level1)
+            {
+                Level1(sender, e);
+            }
+            if (_gameLevel == GameLevel.Level2)
+            {
+                Level2(sender, e);
+            }
+            if (_gameLevel == GameLevel.Level3)
+            {
+                Level3(sender, e);
+            }
+        }
+
+        /*private void UpKey(object sender, System.EventArgs e)
+        {
+            if(!isPaused)
+            {
+                _model.PlayerMove(0);
+            }
+        }
+
+        private void DownKey(object sender, System.EventArgs e)
+        {
+            if (!isPaused)
+            {
+                _model.PlayerMove(1);
+            }
+        }
+
+        private void RightKey(object sender, System.EventArgs e)
+        {
+            if (!isPaused)
+            {
+                _model.PlayerMove(2);
+            }
+        }
+
+        private void LeftKey(object sender, System.EventArgs e)
+        {
+            if (!isPaused)
+            {
+                _model.PlayerMove(3);
+            }
+        }*/
 
         #endregion
 

@@ -494,31 +494,13 @@ namespace SneakingOutWPF.Model
         /// Mezők generálása.
         /// </summary>
         /// <param name="count">Mezők száma.</param>
-       /* private void GenerateFields(Int32 count)
+        /*private void GenerateFields(Int32 count)
         {
-            
-
+           
             for (Int32 i = 0; i < count; i++)
             {
-                _table.SetValue(i,)
+               
 
-                do
-                {
-                    x = random.Next(_table.Size);
-                    y = random.Next(_table.Size);
-                }
-                while (!_table.IsEmpty(x, y)); // üres mező véletlenszerű kezelése
-
-                do
-                {
-                    for (Int32 j = random.Next(10) + 1; j >= 0; j--) // véletlenszerű növelés
-                    {
-                        _table.StepValue(x, y);
-                    }
-                }
-                while (_table.IsEmpty(x, y));
-
-                _table.SetLock(x, y);
             }
         }*/
 

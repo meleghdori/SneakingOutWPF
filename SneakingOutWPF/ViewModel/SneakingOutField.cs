@@ -7,6 +7,11 @@ namespace SneakingOutWPF.ViewModel
     public class SneakingOutField : ViewModelBase
     {
         private String _text;
+        private Boolean _isWall;
+        private Boolean _isPlayer;
+        private Boolean _isSecurity;
+        private Boolean _isEmpty;
+        private Boolean _isExit;
 
         /// <summary>
         /// Felirat lekérdezése, vagy beállítása.
@@ -24,49 +29,69 @@ namespace SneakingOutWPF.ViewModel
             }
         }
 
-        public Boolean IsSecurity()
+        public Boolean IsSecurity
         {
-            if(_text == "1" || _text == "2")
+            get { return _isSecurity; }
+            set
             {
-                return true;
+                if (_isSecurity != value)
+                {
+                    _isSecurity = value;
+                    OnPropertyChanged();
+                }
             }
-            else { return false; }
         }
 
-        public Boolean IsPlayer()
+        public Boolean IsPlayer
         {
-            if (_text == "3")
+            get { return _isPlayer; }
+            set
             {
-                return true;
+                if (_isPlayer != value)
+                {
+                    _isPlayer = value;
+                    OnPropertyChanged();
+                }
             }
-            else { return false; }
         }
 
-        public Boolean IsWall()
+        public Boolean IsWall
         {
-            if (_text == "4")
+            get { return _isWall; }
+            set
             {
-                return true;
+                if (_isWall != value)
+                {
+                    _isWall = value;
+                    OnPropertyChanged();
+                }
             }
-            else { return false; }
         }
 
-        public Boolean IsEmpty()
+        public Boolean IsEmpty
         {
-            if (_text == "0")
+            get { return _isEmpty; }
+            set
             {
-                return true;
+                if (_isEmpty != value)
+                {
+                    _isEmpty = value;
+                    OnPropertyChanged();
+                }
             }
-            else { return false; }
         }
 
-        public Boolean IsExit()
+        public Boolean IsExit
         {
-            if (_text == "5")
+            get { return _isExit; }
+            set
             {
-                return true;
+                if (_isExit != value)
+                {
+                    _isExit = value;
+                    OnPropertyChanged();
+                }
             }
-            else { return false; }
         }
 
         /// <summary>

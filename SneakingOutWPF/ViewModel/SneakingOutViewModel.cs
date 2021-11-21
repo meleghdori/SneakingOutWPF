@@ -22,11 +22,6 @@ namespace SneakingOutWPF.ViewModel
         public DelegateCommand NewGameCommand { get; private set; }
 
         /// <summary>
-        /// Játék betöltése parancs lekérdezése.
-        /// </summary>
-        public DelegateCommand LoadGameCommand { get; private set; }
-
-        /// <summary>
         /// Játék mentése parancs lekérdezése.
         /// </summary>
         public DelegateCommand SaveGameCommand { get; private set; }
@@ -35,6 +30,31 @@ namespace SneakingOutWPF.ViewModel
         /// Kilépés parancs lekérdezése.
         /// </summary>
         public DelegateCommand ExitCommand { get; private set; }
+
+        /// <summary>
+        /// Kilépés parancs lekérdezése.
+        /// </summary>
+        public DelegateCommand RestartCommand { get; private set; }
+
+        /// <summary>
+        /// Kilépés parancs lekérdezése.
+        /// </summary>
+        public DelegateCommand PauseCommand { get; private set; }
+
+        /// <summary>
+        /// Kilépés parancs lekérdezése.
+        /// </summary>
+        public DelegateCommand Level1Command { get; private set; }
+
+        public DelegateCommand Level2Command { get; private set; }
+
+        public DelegateCommand Level3Command { get; private set; }
+
+        public DelegateCommand LeftKeyDownCommand { get;private set; }
+        public DelegateCommand RightKeyDownCommand { get;private set; }
+        public DelegateCommand DownKeyDownCommand { get;private set; }
+        public DelegateCommand UpKeyDownCommand { get;private set; }
+
 
         /// <summary>
         /// Játékmező gyűjtemény lekérdezése.
@@ -56,16 +76,6 @@ namespace SneakingOutWPF.ViewModel
         #region Events
 
         /// <summary>
-        /// Új játék eseménye.
-        /// </summary>
-        public event EventHandler NewGame;
-
-        /// <summary>
-        /// Játék betöltésének eseménye.
-        /// </summary>
-        public event EventHandler LoadGame;
-
-        /// <summary>
         /// Játék mentésének eseménye.
         /// </summary>
         public event EventHandler SaveGame;
@@ -74,6 +84,51 @@ namespace SneakingOutWPF.ViewModel
         /// Játékból való kilépés eseménye.
         /// </summary>
         public event EventHandler ExitGame;
+
+        /// <summary>
+        /// Játékból való kilépés eseménye.
+        /// </summary>
+        public event EventHandler Level1;
+        /// <summary>
+        /// Játékból való kilépés eseménye.
+        /// </summary>
+        public event EventHandler Level2;
+        /// <summary>
+        /// Játékból való kilépés eseménye.
+        /// </summary>
+        public event EventHandler Level3;
+
+        /// <summary>
+        /// Játékból megállítása
+        /// </summary>
+        public event EventHandler PauseGame;
+
+        /// <summary>
+        /// Játékból ujrainditasa
+        /// </summary>
+        public event EventHandler RestartGame;
+        /*
+        /// <summary>
+        /// gombok iranyitasa
+        /// </summary>
+        public event EventHandler UpKey;
+
+        /// <summary>
+        /// gombok iranyitasa
+        /// </summary>
+        public event EventHandler DownKey;
+
+        /// <summary>
+        /// gombok iranyitasa
+        /// </summary>
+        public event EventHandler RightKey;
+
+        /// <summary>
+        /// gombok iranyitasa
+        /// </summary>
+        public event EventHandler LeftKey;*/
+
+
 
         #endregion
 
@@ -92,10 +147,17 @@ namespace SneakingOutWPF.ViewModel
             _model.GameCreated += new EventHandler<SneakingOutEventArgs>(Model_GameCreated);
 
             // parancsok kezelése
-            NewGameCommand = new DelegateCommand(param => OnNewGame());
-            LoadGameCommand = new DelegateCommand(param => OnLoadGame());
+            RestartCommand = new DelegateCommand(param => OnRestartGame());
+            PauseCommand = new DelegateCommand(param => OnPauseGame());
+            Level1Command = new DelegateCommand(param => OnLevel1());
+            Level2Command = new DelegateCommand(param => OnLevel2());
+            Level3Command = new DelegateCommand(param => OnLevel3());
             SaveGameCommand = new DelegateCommand(param => OnSaveGame());
             ExitCommand = new DelegateCommand(param => OnExitGame());
+           /* LeftKeyDownCommand = new DelegateCommand(param => OnLeftKey());
+            RightKeyDownCommand = new DelegateCommand(param => OnRightKey());
+            DownKeyDownCommand = new DelegateCommand(param => OnDownKey());
+            UpKeyDownCommand = new DelegateCommand(param => OnUpKey());*/
 
             // játéktábla létrehozása
             Fields = new ObservableCollection<SneakingOutField>();
@@ -105,10 +167,15 @@ namespace SneakingOutWPF.ViewModel
                 {
                     Fields.Add(new SneakingOutField
                     {
+                        IsEmpty = false,
+                        IsExit = false,
+                        IsPlayer = false,
+                        IsSecurity = false,
+                        IsWall = false,
                         Text = String.Empty,
                         X = i,
                         Y = j,
-                        Number = i * _model.Table.Size + j, // a gomb sorszáma, amelyet felhasználunk az azonosításhoz
+                        Number = i * _model.Table.Size + j, // a mezo sorszáma, amelyet felhasználunk az azonosításhoz
                         StepCommand = new DelegateCommand(param => StepGame(Convert.ToInt32(param)))
                         // ha egy mezőre léptek, akkor jelezzük a léptetést, változtatjuk a lépésszámot
                     });
@@ -129,6 +196,32 @@ namespace SneakingOutWPF.ViewModel
         {
             foreach (SneakingOutField field in Fields) // inicializálni kell a mezőket is
             {
+                field.IsEmpty = false;
+                field.IsExit = false;
+                field.IsPlayer = false;
+                field.IsSecurity = false;
+                field.IsWall = false;
+
+                if (_model.Table[field.X, field.Y] == 0)
+                {
+                    field.IsEmpty = true;
+                }
+                else if (_model.Table[field.X, field.Y] == 1 || _model.Table[field.X, field.Y] == 2)
+                {
+                    field.IsSecurity = true;
+                }
+                else if (_model.Table[field.X, field.Y] == 3)
+                {
+                    field.IsPlayer = true;
+                }
+                else if (_model.Table[field.X, field.Y] == 4)
+                {
+                    field.IsWall = true;
+                }
+                else if (_model.Table[field.X, field.Y] == 5)
+                {
+                    field.IsExit = true;
+                }
                 field.Text = !_model.Table.IsEmpty(field.X, field.Y) ? _model.Table[field.X, field.Y].ToString() : String.Empty;
             }
 
@@ -183,23 +276,48 @@ namespace SneakingOutWPF.ViewModel
         #region Event methods
 
         /// <summary>
-        /// Új játék indításának eseménykiváltása.
+        /// jatek megallitasa
         /// </summary>
-        private void OnNewGame()
+        private void OnPauseGame()
         {
-            if (NewGame != null)
-                NewGame(this, EventArgs.Empty);
+            if (PauseGame != null)
+                PauseGame(this, EventArgs.Empty);
         }
 
-
+        /// <summary>
+        /// jatek ujrakezdese
+        /// </summary>
+        private void OnRestartGame()
+        {
+            if (RestartGame != null)
+                RestartGame(this, EventArgs.Empty);
+        }
 
         /// <summary>
-        /// Játék betöltése eseménykiváltása.
+        /// egyes szint
         /// </summary>
-        private void OnLoadGame()
+        private void OnLevel1()
         {
-            if (LoadGame != null)
-                LoadGame(this, EventArgs.Empty);
+            if (Level1 != null)
+                Level1(this, EventArgs.Empty);
+        }
+
+        /// <summary>
+        /// kettes szint
+        /// </summary>
+        private void OnLevel2()
+        {
+            if (Level2 != null)
+                Level2(this, EventArgs.Empty);
+        }
+
+        /// <summary>
+        /// harmas szint
+        /// </summary>
+        private void OnLevel3()
+        {
+            if (Level3 != null)
+                Level3(this, EventArgs.Empty);
         }
 
         /// <summary>
@@ -219,6 +337,30 @@ namespace SneakingOutWPF.ViewModel
             if (ExitGame != null)
                 ExitGame(this, EventArgs.Empty);
         }
+
+        /*public void OnUpKey(object o)
+        {
+            _model.PlayerMove(0);
+        }
+
+        public void OnDownKey()
+        {
+            if (DownKey != null)
+                DownKey(this, EventArgs.Empty);
+        }
+
+        private void OnRightKey()
+        {
+            if (RightKey != null)
+                RightKey(this, EventArgs.Empty);
+        }
+
+        private void OnLeftKey()
+        {
+            if (LeftKey != null)
+                LeftKey(this, EventArgs.Empty);
+        }*/
+
 
         #endregion
 

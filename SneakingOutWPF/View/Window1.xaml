@@ -4,8 +4,13 @@
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         mc:Ignorable="d"
-        Title="Sneaking Out the Game" Height="450" Width="400" MinHeight="450" MinWidth="400"
-        KeyDown="Window_KeyDown">
+        Title="Sneaking Out the Game" Height="450" Width="400" MinHeight="450" MinWidth="400">
+    <Window.InputBindings>
+        <KeyBinding Command="{Binding LeftKeyDownCommand}" Key="Left"/>
+        <KeyBinding Command="{Binding RightKeyDownCommand}" Key="Right"/>
+        <KeyBinding Command="{Binding DownKeyDownCommand}" Key="Down"/>
+        <KeyBinding Command="{Binding UpKeyDownCommand}" Key="Up"/>
+    </Window.InputBindings>
     <Grid>
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto" />
@@ -15,17 +20,18 @@
 
         <Menu Grid.Row="0">
             <MenuItem Header="File">
-                <MenuItem Header="New Game" Command="{Binding NewGameCommand}">
-                    <MenuItem Header="Level 1" IsCheckable="True" IsChecked="{Binding IsGameEasy}" />
-                    <MenuItem Header="Level 2" IsCheckable="True" IsChecked="{Binding IsGameMedium}" />
-                    <MenuItem Header="Level 3" IsCheckable="True" IsChecked="{Binding IsGameHard}" />
+                <MenuItem Header="New Game">
+                    <MenuItem Header="Level 1" Command="{Binding Level1Command}" />
+                    <MenuItem Header="Level 2" Command="{Binding Level2Command}" />
+                    <MenuItem Header="Level 3" Command="{Binding Level3Command}" />
                 </MenuItem>
-                <MenuItem Header="Pause" Command="{Binding LoadGameCommand}" />
-                <MenuItem Header="Restart" Command="{Binding LoadGameCommand}" />
+                <MenuItem Header="Pause" Command="{Binding PauseCommand}" />
+                <MenuItem Header="Restart" Command="{Binding RestartCommand}" />
                 <MenuItem Header="Save" Command="{Binding SaveGameCommand}" />
                 <MenuItem Header="Exit" Command="{Binding ExitCommand}" />
             </MenuItem>
         </Menu>
+        
         <ItemsControl Grid.Row="1" ItemsSource="{Binding Fields}">
             <!--az mezőket tároló vezérlő-->
             <ItemsControl.ItemsPanel>
@@ -37,7 +43,7 @@
             <ItemsControl.ItemTemplate>
                 <!--az elemek gombok lesznek--> 
                 <DataTemplate>
-                    <Image Focusable="False" RenderTransformOrigin="0.5, 0.5" Stretch="Fill">
+                    <Image Focusable="False" RenderTransformOrigin="0.5, 0.5" Stretch="Fill" >
                         <!-- gomb háttérszíne -->
                         <!-- gomb méretezése (csak az animációnál használjuk ki) -->
                         <Image.RenderTransform>
@@ -46,23 +52,23 @@
                         <Image.Style>
                             <!-- gomb stílusa, ahol a színét megadjuk -->
                             <Style TargetType="{x:Type Image}">
-                                <Setter Property="Source" Value="\Resources\black.png"/>
+                                <Setter Property="Source" Value="../black.png"/>
                                 <!-- a szín egy adatkötés hatására fog változni -->
                                 <Style.Triggers>
                                     <DataTrigger Binding="{Binding IsSecurity}" Value="True">
-                                        <Setter Property="Source" Value="\Resources\security.png" />
+                                        <Setter Property="Source" Value="../security.png"/>
                                     </DataTrigger>
                                     <DataTrigger Binding="{Binding IsPlayer}" Value="True">
-                                        <Setter Property="Source" Value="..\..\Resources\player1.png" />
+                                        <Setter Property="Source" Value="../player1.png" />
                                     </DataTrigger>
                                     <DataTrigger Binding="{Binding IsWall}" Value="True">
-                                        <Setter Property="Source" Value="..\..\Resources\security.png" />
+                                        <Setter Property="Source" Value="../wall.jpg" />
                                     </DataTrigger>
                                     <DataTrigger Binding="{Binding IsExit}" Value="True">
-                                        <Setter Property="Source" Value="..\..\Resources\exit.jpg" />
+                                        <Setter Property="Source" Value="../exit.jpg" />
                                     </DataTrigger>
                                     <DataTrigger Binding="{Binding IsEmpty}" Value="True">
-                                        <Setter Property="Source" Value="..\..\Resources\black.png" />
+                                        <Setter Property="Source" Value="../black.png" />
                                     </DataTrigger>
                                 </Style.Triggers>
                             </Style>
