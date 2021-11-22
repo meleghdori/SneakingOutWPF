@@ -4,7 +4,7 @@
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         mc:Ignorable="d"
-        Title="Sneaking Out the Game" Height="450" Width="400" MinHeight="450" MinWidth="400">
+        Title="Sneaking Out the Game" Height="450" Width="400" MinHeight="450" MinWidth="400" >
     <Window.InputBindings>
         <KeyBinding Command="{Binding LeftKeyDownCommand}" Key="Left"/>
         <KeyBinding Command="{Binding RightKeyDownCommand}" Key="Right"/>

@@ -107,27 +107,11 @@ namespace SneakingOutWPF.ViewModel
         /// Játékból ujrainditasa
         /// </summary>
         public event EventHandler RestartGame;
-        /*
-        /// <summary>
-        /// gombok iranyitasa
-        /// </summary>
-        public event EventHandler UpKey;
 
-        /// <summary>
-        /// gombok iranyitasa
-        /// </summary>
-        public event EventHandler DownKey;
-
-        /// <summary>
-        /// gombok iranyitasa
-        /// </summary>
-        public event EventHandler RightKey;
-
-        /// <summary>
-        /// gombok iranyitasa
-        /// </summary>
-        public event EventHandler LeftKey;*/
-
+        public event EventHandler UpKeyDown;
+        public event EventHandler DownKeyDown;
+        public event EventHandler RightKeyDown;
+        public event EventHandler LeftKeyDown;
 
 
         #endregion
@@ -154,10 +138,11 @@ namespace SneakingOutWPF.ViewModel
             Level3Command = new DelegateCommand(param => OnLevel3());
             SaveGameCommand = new DelegateCommand(param => OnSaveGame());
             ExitCommand = new DelegateCommand(param => OnExitGame());
-           /* LeftKeyDownCommand = new DelegateCommand(param => OnLeftKey());
-            RightKeyDownCommand = new DelegateCommand(param => OnRightKey());
-            DownKeyDownCommand = new DelegateCommand(param => OnDownKey());
-            UpKeyDownCommand = new DelegateCommand(param => OnUpKey());*/
+            UpKeyDownCommand = new DelegateCommand(param => OnUpKeyDown());
+            DownKeyDownCommand = new DelegateCommand(param => OnDownKeyDown());
+            LeftKeyDownCommand = new DelegateCommand(param => OnLeftKeyDown());
+            RightKeyDownCommand = new DelegateCommand(param => OnRightKeyDown());
+
 
             // játéktábla létrehozása
             Fields = new ObservableCollection<SneakingOutField>();
@@ -192,7 +177,7 @@ namespace SneakingOutWPF.ViewModel
         /// <summary>
         /// Tábla frissítése.
         /// </summary>
-        private void RefreshTable()
+        public void RefreshTable()
         {
             foreach (SneakingOutField field in Fields) // inicializálni kell a mezőket is
             {
@@ -222,7 +207,7 @@ namespace SneakingOutWPF.ViewModel
                 {
                     field.IsExit = true;
                 }
-                field.Text = !_model.Table.IsEmpty(field.X, field.Y) ? _model.Table[field.X, field.Y].ToString() : String.Empty;
+                //field.Text = !_model.Table.IsEmpty(field.X, field.Y) ? _model.Table[field.X, field.Y].ToString() : String.Empty;
             }
 
             OnPropertyChanged("GameTime");
@@ -261,6 +246,7 @@ namespace SneakingOutWPF.ViewModel
         private void Model_GameAdvanced(object sender, SneakingOutEventArgs e)
         {
             OnPropertyChanged("GameTime");
+            RefreshTable();
         }
 
         /// <summary>
@@ -338,29 +324,29 @@ namespace SneakingOutWPF.ViewModel
                 ExitGame(this, EventArgs.Empty);
         }
 
-        /*public void OnUpKey(object o)
+        private void OnUpKeyDown()
         {
-            _model.PlayerMove(0);
+            if (UpKeyDown != null)
+                UpKeyDown(this, EventArgs.Empty);
         }
 
-        public void OnDownKey()
+        private void OnDownKeyDown()
         {
-            if (DownKey != null)
-                DownKey(this, EventArgs.Empty);
+            if (DownKeyDown != null)
+                DownKeyDown(this, EventArgs.Empty);
         }
 
-        private void OnRightKey()
+        private void OnRightKeyDown()
         {
-            if (RightKey != null)
-                RightKey(this, EventArgs.Empty);
+            if (RightKeyDown != null)
+                RightKeyDown(this, EventArgs.Empty);
         }
 
-        private void OnLeftKey()
+        private void OnLeftKeyDown()
         {
-            if (LeftKey != null)
-                LeftKey(this, EventArgs.Empty);
-        }*/
-
+            if(LeftKeyDown != null)
+                LeftKeyDown(this, EventArgs.Empty);
+        }
 
         #endregion
 

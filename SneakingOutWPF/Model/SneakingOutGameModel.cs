@@ -488,23 +488,5 @@ namespace SneakingOutWPF.Model
 
         #endregion
 
-        #region Private game methods
-
-        /// <summary>
-        /// Mezők generálása.
-        /// </summary>
-        /// <param name="count">Mezők száma.</param>
-        /*private void GenerateFields(Int32 count)
-        {
-           
-            for (Int32 i = 0; i < count; i++)
-            {
-               
-
-            }
-        }*/
-
-        #endregion
-
     }
 }

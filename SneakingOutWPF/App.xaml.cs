@@ -64,10 +64,10 @@ namespace SneakingOutWPF
             _viewModel.SaveGame += new EventHandler(ViewModel_SaveGame);
             _viewModel.PauseGame += new EventHandler(ViewModel_PauseGame);
             _viewModel.RestartGame += new EventHandler(ViewModel_RestartGame);
-            /*_viewModel.UpKey += new EventHandler(UpKey);
-            _viewModel.DownKey += new EventHandler(DownKey);
-            _viewModel.RightKey += new EventHandler(RightKey);
-            _viewModel.LeftKey += new EventHandler(LeftKey);*/
+            _viewModel.UpKeyDown += new EventHandler(ViewModel_UpKey);
+            _viewModel.DownKeyDown += new EventHandler(ViewModel_DownKey);
+            _viewModel.RightKeyDown += new EventHandler(ViewModel_RightKey);
+            _viewModel.LeftKeyDown += new EventHandler(ViewModel_LeftKey);
 
             // nézet létrehozása
             _view = new Window1();
@@ -79,7 +79,6 @@ namespace SneakingOutWPF
             _timer = new DispatcherTimer();
             _timer.Interval = TimeSpan.FromSeconds(1);
             _timer.Tick += new EventHandler(Timer_Tick);
-            //_timer.Start();
 
             isPaused = true;
         }
@@ -89,6 +88,7 @@ namespace SneakingOutWPF
             if (!isPaused)
             {
                 _model.AdvanceTime();
+                _viewModel.RefreshTable();
             }
         }
 
@@ -116,6 +116,38 @@ namespace SneakingOutWPF
         #endregion
 
         #region ViewModel event handlers
+
+        private void ViewModel_UpKey(object sender, EventArgs e)
+        {
+            if(!isPaused)
+            {
+                _model.PlayerMove(0);
+            }
+        }
+
+        private void ViewModel_DownKey(object sender, EventArgs e)
+        {
+            if (!isPaused)
+            {
+                _model.PlayerMove(1);
+            }
+        }
+
+        private void ViewModel_RightKey(object sender, EventArgs e)
+        {
+            if (!isPaused)
+            {
+                _model.PlayerMove(2);
+            }
+        }
+
+        private void ViewModel_LeftKey(object sender, EventArgs e)
+        {
+            if (!isPaused)
+            {
+                _model.PlayerMove(3);
+            }
+        }
 
         /// <summary>
         /// Játék betöltésének eseménykezelője.
@@ -232,38 +264,6 @@ namespace SneakingOutWPF
                 Level3(sender, e);
             }
         }
-
-        /*private void UpKey(object sender, System.EventArgs e)
-        {
-            if(!isPaused)
-            {
-                _model.PlayerMove(0);
-            }
-        }
-
-        private void DownKey(object sender, System.EventArgs e)
-        {
-            if (!isPaused)
-            {
-                _model.PlayerMove(1);
-            }
-        }
-
-        private void RightKey(object sender, System.EventArgs e)
-        {
-            if (!isPaused)
-            {
-                _model.PlayerMove(2);
-            }
-        }
-
-        private void LeftKey(object sender, System.EventArgs e)
-        {
-            if (!isPaused)
-            {
-                _model.PlayerMove(3);
-            }
-        }*/
 
         #endregion
 
