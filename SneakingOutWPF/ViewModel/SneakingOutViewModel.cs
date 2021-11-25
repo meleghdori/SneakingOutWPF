@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Text;
 using System.Collections.ObjectModel;
 using SneakingOutWPF.Model;
+using SneakingOutWPF.Persistence;
 
 namespace SneakingOutWPF.ViewModel
 {
@@ -51,8 +52,11 @@ namespace SneakingOutWPF.ViewModel
         public DelegateCommand Level3Command { get; private set; }
 
         public DelegateCommand LeftKeyDownCommand { get;private set; }
+
         public DelegateCommand RightKeyDownCommand { get;private set; }
+
         public DelegateCommand DownKeyDownCommand { get;private set; }
+
         public DelegateCommand UpKeyDownCommand { get;private set; }
 
 
@@ -114,6 +118,7 @@ namespace SneakingOutWPF.ViewModel
         public event EventHandler LeftKeyDown;
 
 
+
         #endregion
 
         #region Constructors
@@ -129,6 +134,7 @@ namespace SneakingOutWPF.ViewModel
             _model.GameAdvanced += new EventHandler<SneakingOutEventArgs>(Model_GameAdvanced);
             _model.GameOver += new EventHandler<SneakingOutEventArgs>(Model_GameOver);
             _model.GameCreated += new EventHandler<SneakingOutEventArgs>(Model_GameCreated);
+           // _model.PlayerChanged += new EventHandler<Player>(PlayerChangedEventHandler);
 
             // parancsok kezelése
             RestartCommand = new DelegateCommand(param => OnRestartGame());
@@ -144,6 +150,7 @@ namespace SneakingOutWPF.ViewModel
             RightKeyDownCommand = new DelegateCommand(param => OnRightKeyDown());
 
 
+
             // játéktábla létrehozása
             Fields = new ObservableCollection<SneakingOutField>();
             for (Int32 i = 0; i < _model.Table.Size; i++) // inicializáljuk a mezőket
@@ -157,22 +164,74 @@ namespace SneakingOutWPF.ViewModel
                         IsPlayer = false,
                         IsSecurity = false,
                         IsWall = false,
-                        Text = String.Empty,
                         X = i,
                         Y = j,
-                        Number = i * _model.Table.Size + j, // a mezo sorszáma, amelyet felhasználunk az azonosításhoz
-                        StepCommand = new DelegateCommand(param => StepGame(Convert.ToInt32(param)))
-                        // ha egy mezőre léptek, akkor jelezzük a léptetést, változtatjuk a lépésszámot
-                    });
+                    }) ;
+                   
+                    OnPropertyChanged();
                 }
             }
 
             RefreshTable();
+            
         }
 
         #endregion
 
         #region Private methods
+        
+        // itt probalgatom h megy e az esemeny kivaltasa
+        public void PlayerChangedEventHandler(object sender, Player player)
+        {
+            Fields[player.getPositionX() + player.getPositionY()].X = player.getPositionX();
+            OnPropertyChanged();
+        }
+
+        public void SyncTable(ObservableCollection<SneakingOutField> Fields )
+        {
+            for(int i = 0; i < _model.Table.Size; i++)
+            {
+                for(int j = 0; j < _model.Table.Size; j++)
+                {
+
+                    Fields[i * _model.Table.Size + j].X = i;
+                    Fields[i * _model.Table.Size + j].Y = j;
+    
+                    if (_model.Table.GetValue(i, j) == 0)
+                    {
+                       
+                        Fields[i * _model.Table.Size + j].IsEmpty = true;
+                    }
+                    else if (_model.Table.GetValue(i, j) == 1)
+                    {
+                        
+                        Fields[i * _model.Table.Size + j].IsSecurity = true;
+                    }
+                    else if (_model.Table.GetValue(i, j) == 2)
+                    {
+                       
+                        Fields[i * _model.Table.Size + j].IsSecurity = true;
+                    }
+                    else if (_model.Table.GetValue(i, j) == 3)
+                    {
+                       
+                        Fields[i * _model.Table.Size + j].IsPlayer = true;
+                    }
+                    else if (_model.Table.GetValue(i, j) == 4)
+                    {
+                        
+                        Fields[i * _model.Table.Size + j].IsWall = true;
+                    }
+                    else if (_model.Table.GetValue(i, j) == 5)
+                    {
+                        
+                        Fields[i * _model.Table.Size + j].IsExit = true;
+                    }
+
+                    OnPropertyChanged("Fields");
+                }
+            }
+        }
 
         /// <summary>
         /// Tábla frissítése.
@@ -181,51 +240,17 @@ namespace SneakingOutWPF.ViewModel
         {
             foreach (SneakingOutField field in Fields) // inicializálni kell a mezőket is
             {
-                field.IsEmpty = false;
+
                 field.IsExit = false;
                 field.IsPlayer = false;
                 field.IsSecurity = false;
                 field.IsWall = false;
-
-                if (_model.Table[field.X, field.Y] == 0)
-                {
-                    field.IsEmpty = true;
-                }
-                else if (_model.Table[field.X, field.Y] == 1 || _model.Table[field.X, field.Y] == 2)
-                {
-                    field.IsSecurity = true;
-                }
-                else if (_model.Table[field.X, field.Y] == 3)
-                {
-                    field.IsPlayer = true;
-                }
-                else if (_model.Table[field.X, field.Y] == 4)
-                {
-                    field.IsWall = true;
-                }
-                else if (_model.Table[field.X, field.Y] == 5)
-                {
-                    field.IsExit = true;
-                }
-                //field.Text = !_model.Table.IsEmpty(field.X, field.Y) ? _model.Table[field.X, field.Y].ToString() : String.Empty;
+                field.IsEmpty = false;
+                SyncTable(Fields);
             }
 
             OnPropertyChanged("GameTime");
             OnPropertyChanged("GameStepCount");
-        }
-
-        /// <summary>
-        /// Játék léptetése eseménykiváltása.
-        /// </summary>
-        /// <param name="index">A lépett mező indexe.</param>
-        private void StepGame(Int32 index)
-        {
-            SneakingOutField field = Fields[index];
-
-            field.Text = _model.Table[field.X, field.Y] > 0 ? _model.Table[field.X, field.Y].ToString() : String.Empty; // visszaírjuk a szöveget
-            OnPropertyChanged("GameStepCount"); // jelezzük a lépésszám változást
-
-            field.Text = !_model.Table.IsEmpty(field.X, field.Y) ? _model.Table[field.X, field.Y].ToString() : String.Empty;
         }
 
         #endregion
@@ -246,6 +271,7 @@ namespace SneakingOutWPF.ViewModel
         private void Model_GameAdvanced(object sender, SneakingOutEventArgs e)
         {
             OnPropertyChanged("GameTime");
+            OnPropertyChanged("Fields");
             RefreshTable();
         }
 

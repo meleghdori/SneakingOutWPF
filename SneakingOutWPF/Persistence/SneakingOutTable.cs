@@ -66,6 +66,7 @@ namespace SneakingOutWPF.Persistence
             _fieldValues = new Int32[tableSize, tableSize];
             Exit = new Int32[2];
             isEscaped = false;
+            SecurityTwo = new Security(9, 9);
 
         }
 
@@ -125,11 +126,28 @@ namespace SneakingOutWPF.Persistence
             //0--üres mező, 1--SecurityOne,2--SecurityTwo, 3--Player, 4--fal, 5--exit
             if (value == 1)
             {
-                SecurityOne = new Security(x, y);
+                if(SecurityOne == null)
+                {
+                    SecurityOne = new Security(x, y);
+                }
+                else
+                {
+                    SecurityOne.setPositionX(x);
+                    SecurityOne.setPositionY(y);
+                }
+
             }
             if (value == 2)
             {
-                SecurityTwo = new Security(x, y);
+                if (SecurityTwo == null)
+                {
+                    SecurityTwo = new Security(x, y);
+                }
+                else
+                {
+                    SecurityTwo.setPositionX(x);
+                    SecurityTwo.setPositionY(y);
+                }
             }
             if (value == 3)
             {

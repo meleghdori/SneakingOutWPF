@@ -28,5 +28,10 @@ namespace SneakingOutWPF.View
                 MessageBox.Show(e.Message);
             }
         }
+
+        private void Image_SourceUpdated(object sender, DataTransferEventArgs e)
+        {
+
+        }
     }
 }

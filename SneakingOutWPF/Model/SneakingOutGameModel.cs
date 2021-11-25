@@ -158,9 +158,9 @@ namespace SneakingOutWPF.Model
             if (IsGameOver) // ha már vége, nem folytathatjuk
                 return;
 
-            SecurityMove(_table._securityOne, _table._securityOne.getDirection());
+            SecurityMove(_table._securityOne, _table._securityOne.getDirection(),1);
             SecurityOneChanged?.Invoke(this, _table._securityOne);
-            SecurityMove(_table._securityTwo, _table._securityTwo.getDirection());
+            SecurityMove(_table._securityTwo, _table._securityTwo.getDirection(),2);
             SecurityTwoChanged?.Invoke(this, _table._securityTwo);// ha nem null akk hivodik meg
 
         }
@@ -172,7 +172,7 @@ namespace SneakingOutWPF.Model
         /// <param name="sec"></param>
         /// <param name="direction"></param>
         /// <returns></returns>
-        public void SecurityMove(Security sec, Int32 direction)
+        public void SecurityMove(Security sec, Int32 direction, Int32 number)
         {
             Random rand = new Random();
             Int32 change = rand.Next(0, 4);
@@ -184,10 +184,12 @@ namespace SneakingOutWPF.Model
                     _table.SetValue(sec.getPositionX(), sec.getPositionY(), 0);
                     sec.setDirection(direction);
                     sec.setPositionX(sec.getPositionX() - 1);
+                    _table.SetValue(sec.getPositionX(), sec.getPositionY(), number);
+
                 }
                 else if (sec.getPositionX() - 1 < 0 || _table[sec.getPositionX() - 1, sec.getPositionY()] == 4 || _table[sec.getPositionX() - 1, sec.getPositionY()] == 5)
                 {
-                    SecurityMove(sec, change);
+                    SecurityMove(sec, change,number);
                 }
             }
 
@@ -198,10 +200,12 @@ namespace SneakingOutWPF.Model
                     _table.SetValue(sec.getPositionX(), sec.getPositionY(), 0);
                     sec.setDirection(direction);
                     sec.setPositionX(sec.getPositionX() + 1);
+                    _table.SetValue(sec.getPositionX(), sec.getPositionY(), number);
+
                 }
                 else if (sec.getPositionX() + 1 >= 10 || _table[sec.getPositionX() + 1, sec.getPositionY()] == 4 || _table[sec.getPositionX() + 1, sec.getPositionY()] == 5)
                 {
-                    SecurityMove(sec, change);
+                    SecurityMove(sec, change, number);
                 }
             }
 
@@ -213,11 +217,13 @@ namespace SneakingOutWPF.Model
                     _table.SetValue(sec.getPositionX(), sec.getPositionY(), 0);
                     sec.setDirection(direction);
                     sec.setPositionY(sec.getPositionY() + 1);
+                    _table.SetValue(sec.getPositionX(), sec.getPositionY(), number);
                 }
                 else if (sec.getPositionY() + 1 >= 10 || _table[sec.getPositionX(), sec.getPositionY() + 1] == 4 || _table[sec.getPositionX(), sec.getPositionY() + 1] == 5)
                 {
-                    SecurityMove(sec, change);
+                    SecurityMove(sec, change,number);
                 }
+                
             }
 
             if (direction == 3)
@@ -227,11 +233,13 @@ namespace SneakingOutWPF.Model
                     _table.SetValue(sec.getPositionX(), sec.getPositionY(), 0);
                     sec.setDirection(direction);
                     sec.setPositionY(sec.getPositionY() - 1);
+                    _table.SetValue(sec.getPositionX(), sec.getPositionY(), number);
                 }
                 else if (sec.getPositionY() - 1 < 0 || _table[sec.getPositionX(), sec.getPositionY() - 1] == 4 || _table[sec.getPositionX(), sec.getPositionY() - 1] == 5)
                 {
-                    SecurityMove(sec, change);
+                    SecurityMove(sec, change,number);
                 }
+               
             }
         }
 
@@ -249,46 +257,67 @@ namespace SneakingOutWPF.Model
 
             if (direction == 0)
             {
-                if (player.getPositionX() - 1 >= 0 && _table[player.getPositionX() - 1, player.getPositionY()] == 0 || _table[player.getPositionX() - 1, player.getPositionY()] == 5)
+                if(player.getPositionX() - 1 < 0)
+                {
+                    return;
+                }
+                else if (player.getPositionX() - 1 >= 0 && _table[player.getPositionX() - 1, player.getPositionY()] == 0 || _table[player.getPositionX() - 1, player.getPositionY()] == 5)
                 {
                     _table.SetValue(player.getPositionX(), player.getPositionY(), 0);
                     player.setPositionX(player.getPositionX() - 1);
                     player.setDirection(direction);
                     _gameStepCount++;
+                    _table.SetValue(player.getPositionX(), player.getPositionY(), 3);
                 }
+
 
             }
 
             if (direction == 1)
             {
-                if (player.getPositionX() + 1 < 10 && _table[player.getPositionX() + 1, player.getPositionY()] == 0 || _table[player.getPositionX() + 1, player.getPositionY()] == 5)
+                if (player.getPositionX() + 1 >= 10)
+                {
+                    return;
+                }
+                else if (player.getPositionX() + 1 < 10 && _table[player.getPositionX() + 1, player.getPositionY()] == 0 || _table[player.getPositionX() + 1, player.getPositionY()] == 5)
                 {
                     _table.SetValue(player.getPositionX(), player.getPositionY(), 0);
                     player.setPositionX(player.getPositionX() + 1);
                     player.setDirection(direction);
                     _gameStepCount++;
+                    _table.SetValue(player.getPositionX(), player.getPositionY(), 3);
                 }
             }
 
             if (direction == 2)
             {
-                if (player.getPositionY() + 1 < 10 && _table[player.getPositionX(), player.getPositionY() + 1] == 0 || _table[player.getPositionX(), player.getPositionY() + 1] == 5)
+                if (player.getPositionY() + 1 >= 10)
+                {
+                    return;
+                }
+                else if (player.getPositionY() + 1 < 10 && _table[player.getPositionX(), player.getPositionY() + 1] == 0 || _table[player.getPositionX(), player.getPositionY() + 1] == 5)
                 {
                     _table.SetValue(player.getPositionX(), player.getPositionY(), 0);
                     player.setPositionY(player.getPositionY() + 1);
                     player.setDirection(direction);
                     _gameStepCount++;
+                    _table.SetValue(player.getPositionX(), player.getPositionY(), 3);
                 }
             }
 
             if (direction == 3)
             {
-                if (player.getPositionY() - 1 >= 0 && _table[player.getPositionX(), player.getPositionY() - 1] == 0 || _table[player.getPositionX(), player.getPositionY() - 1] == 5)
+                if (player.getPositionY() - 1 < 0)
+                {
+                    return;
+                }
+                else if (player.getPositionY() - 1 >= 0 && _table[player.getPositionX(), player.getPositionY() - 1] == 0 || _table[player.getPositionX(), player.getPositionY() - 1] == 5)
                 {
                     _table.SetValue(player.getPositionX(), player.getPositionY(), 0);
                     player.setPositionY(player.getPositionY() - 1);
                     player.setDirection(direction);
                     _gameStepCount++;
+                    _table.SetValue(player.getPositionX(), player.getPositionY(), 3);
                 }
             }
         }
@@ -309,7 +338,11 @@ namespace SneakingOutWPF.Model
                         {
                             for (int l = 0; l < 2; l++)
                             {
-                                if (_table[_table._securityOne.getPositionX() + k, _table._securityOne.getPositionY() + l] == 4)
+                                if (_table._securityOne.getPositionX() + k >= 10 || _table._securityOne.getPositionY() + l >= 10)
+                                {
+                                    return;
+                                }
+                                else if (_table[_table._securityOne.getPositionX() + k, _table._securityOne.getPositionY() + l] == 4)
                                 {
                                     _gotCaught = false;
                                     return;
@@ -324,7 +357,11 @@ namespace SneakingOutWPF.Model
                         {
                             for (int l = 0; l < 2; l++)
                             {
-                                if (_table[_table._securityOne.getPositionX() + k, _table._securityOne.getPositionY() - l] == 4)
+                                if (_table._securityOne.getPositionX() + k >= 10 || _table._securityOne.getPositionY() - l < 0)
+                                {
+                                    return;
+                                }
+                                else if (_table[_table._securityOne.getPositionX() + k, _table._securityOne.getPositionY() - l] == 4)
                                 {
                                     _gotCaught = false;
                                     return;
@@ -339,7 +376,11 @@ namespace SneakingOutWPF.Model
                         {
                             for (int l = 0; l < 2; l++)
                             {
-                                if (_table[_table._securityOne.getPositionX() - k, _table._securityOne.getPositionY() + l] == 4)
+                                if (_table._securityOne.getPositionX() - k < 0 || _table._securityOne.getPositionY() + l >= 10)
+                                {
+                                    return;
+                                }
+                                else if (_table[_table._securityOne.getPositionX() - k, _table._securityOne.getPositionY() + l] == 4)
                                 {
                                     _gotCaught = false;
                                     return;
@@ -354,7 +395,11 @@ namespace SneakingOutWPF.Model
                         {
                             for (int l = 0; l < 2; l++)
                             {
-                                if (_table[_table._securityOne.getPositionX() - k, _table._securityOne.getPositionY() - l] == 4)
+                                if (_table._securityOne.getPositionX() - k < 0 || _table._securityOne.getPositionY() - l < 0)
+                                {
+                                    return;
+                                }
+                                else if (_table[_table._securityOne.getPositionX() - k, _table._securityOne.getPositionY() - l] == 4)
                                 {
                                     _gotCaught = false;
                                     return;
@@ -369,7 +414,11 @@ namespace SneakingOutWPF.Model
                         {
                             for (int l = 0; l < 2; l++)
                             {
-                                if (_table[_table._securityTwo.getPositionX() + k, _table._securityTwo.getPositionY() + l] == 4)
+                                if (_table._securityTwo.getPositionX() + k >= 10 || _table._securityTwo.getPositionY() + l >= 10)
+                                {
+                                    return;
+                                }
+                                else if (_table[_table._securityTwo.getPositionX() + k, _table._securityTwo.getPositionY() + l] == 4)
                                 {
                                     _gotCaught = false;
                                     return;
@@ -384,7 +433,11 @@ namespace SneakingOutWPF.Model
                         {
                             for (int l = 0; l < 2; l++)
                             {
-                                if (_table[_table._securityTwo.getPositionX() + k, _table._securityTwo.getPositionY() - l] == 4)
+                                if (_table._securityTwo.getPositionX() + k >= 10 || _table._securityTwo.getPositionY() - l < 0)
+                                {
+                                    return;
+                                }
+                                else if  (_table[_table._securityTwo.getPositionX() + k, _table._securityTwo.getPositionY() - l] == 4)
                                 {
                                     _gotCaught = false;
                                     return;
@@ -399,7 +452,11 @@ namespace SneakingOutWPF.Model
                         {
                             for (int l = 0; l < 2; l++)
                             {
-                                if (_table[_table._securityTwo.getPositionX() - k, _table._securityTwo.getPositionY() + l] == 4)
+                                if (_table._securityTwo.getPositionX() - k < 0 || _table._securityTwo.getPositionY() + l >= 10)
+                                {
+                                    return;
+                                }
+                                else if (_table[_table._securityTwo.getPositionX() - k, _table._securityTwo.getPositionY() + l] == 4)
                                 {
                                     _gotCaught = false;
                                     return;
@@ -414,6 +471,10 @@ namespace SneakingOutWPF.Model
                         {
                             for (int l = 0; l < 2; l++)
                             {
+                                if (_table._securityTwo.getPositionX() - k < 0 || _table._securityTwo.getPositionY() - l < 0)
+                                {
+                                    return;
+                                }
                                 if (_table[_table._securityTwo.getPositionX() - k, _table._securityTwo.getPositionY() - l] == 4)
                                 {
                                     _gotCaught = false;

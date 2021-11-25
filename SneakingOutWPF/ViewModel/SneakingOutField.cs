@@ -6,28 +6,11 @@ namespace SneakingOutWPF.ViewModel
 {
     public class SneakingOutField : ViewModelBase
     {
-        private String _text;
         private Boolean _isWall;
         private Boolean _isPlayer;
         private Boolean _isSecurity;
         private Boolean _isEmpty;
         private Boolean _isExit;
-
-        /// <summary>
-        /// Felirat lekérdezése, vagy beállítása.
-        /// </summary>
-        public String Text
-        {
-            get { return _text; }
-            set
-            {
-                if (_text != value)
-                {
-                    _text = value;
-                    OnPropertyChanged();
-                }
-            }
-        }
 
         public Boolean IsSecurity
         {
@@ -95,20 +78,16 @@ namespace SneakingOutWPF.ViewModel
         }
 
         /// <summary>
-        /// Vízszintes koordináta lekérdezése, vagy beállítása.
+        /// Függőleges koordináta lekérdezése, vagy beállítása.
         /// </summary>
         public Int32 X { get; set; }
 
         /// <summary>
-        /// Függőleges koordináta lekérdezése, vagy beállítása.
+        /// Vízszintes koordináta lekérdezése, vagy beállítása.
         /// </summary>
         public Int32 Y { get; set; }
 
-        /// <summary>
-        /// Sorszám lekérdezése.
-        /// </summary>
-        public Int32 Number { get; set; }
-
+      
         /// <summary>
         /// Lépés parancs lekérdezése, vagy beállítása.
         /// </summary>

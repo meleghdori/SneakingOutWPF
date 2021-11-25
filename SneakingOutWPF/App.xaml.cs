@@ -26,6 +26,7 @@ namespace SneakingOutWPF
 
         #region Fields
 
+        public EventHandler<Player> PlayerChanged;
         private SneakingOutGameModel _model;
         private SneakingOutViewModel _viewModel;
         private Window1 _view;
@@ -51,6 +52,7 @@ namespace SneakingOutWPF
 
         private void App_Startup(object sender, StartupEventArgs e)
         {
+            
             // modell létrehozása
             _model = new SneakingOutGameModel(new SneakingOutFileDataAccess());
             _model.GameOver += new EventHandler<SneakingOutEventArgs>(Model_GameOver);
@@ -119,9 +121,14 @@ namespace SneakingOutWPF
 
         private void ViewModel_UpKey(object sender, EventArgs e)
         {
+            SneakingOutField field;
             if(!isPaused)
             {
                 _model.PlayerMove(0);
+                field = _viewModel.Fields[_model.Table._player.getPositionX() + _model.Table._player.getPositionY()];
+                field.X = _model.Table._player.getPositionX();
+                field.Y = _model.Table._player.getPositionY();
+                field.IsPlayer = true;
             }
         }
 
