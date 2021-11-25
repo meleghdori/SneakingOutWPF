@@ -90,15 +90,15 @@ namespace SneakingOutWPF.ViewModel
         public event EventHandler ExitGame;
 
         /// <summary>
-        /// Játékból való kilépés eseménye.
+        /// Level1
         /// </summary>
         public event EventHandler Level1;
         /// <summary>
-        /// Játékból való kilépés eseménye.
+        /// Level2
         /// </summary>
         public event EventHandler Level2;
         /// <summary>
-        /// Játékból való kilépés eseménye.
+        /// Level3
         /// </summary>
         public event EventHandler Level3;
 
@@ -112,6 +112,9 @@ namespace SneakingOutWPF.ViewModel
         /// </summary>
         public event EventHandler RestartGame;
 
+        /// <summary>
+        /// jatekos iranyatasanak esemenyei
+        /// </summary>
         public event EventHandler UpKeyDown;
         public event EventHandler DownKeyDown;
         public event EventHandler RightKeyDown;
@@ -134,7 +137,6 @@ namespace SneakingOutWPF.ViewModel
             _model.GameAdvanced += new EventHandler<SneakingOutEventArgs>(Model_GameAdvanced);
             _model.GameOver += new EventHandler<SneakingOutEventArgs>(Model_GameOver);
             _model.GameCreated += new EventHandler<SneakingOutEventArgs>(Model_GameCreated);
-           // _model.PlayerChanged += new EventHandler<Player>(PlayerChangedEventHandler);
 
             // parancsok kezelése
             RestartCommand = new DelegateCommand(param => OnRestartGame());
@@ -261,9 +263,7 @@ namespace SneakingOutWPF.ViewModel
         /// Játék végének eseménykezelője.
         /// </summary>
         private void Model_GameOver(object sender, SneakingOutEventArgs e)
-        {
-
-        }
+        {}
 
         /// <summary>
         /// Játék előrehaladásának eseménykezelője.

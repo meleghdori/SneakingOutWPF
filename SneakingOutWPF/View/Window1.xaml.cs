@@ -19,19 +19,7 @@ namespace SneakingOutWPF.View
     {
         public Window1()
         {
-            try
-            {
-                InitializeComponent();
-            }
-            catch (Exception e)
-            {
-                MessageBox.Show(e.Message);
-            }
-        }
-
-        private void Image_SourceUpdated(object sender, DataTransferEventArgs e)
-        {
-
+            InitializeComponent();
         }
     }
 }
